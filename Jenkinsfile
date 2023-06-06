@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REGISTRY_NAME = "singhvishab/ecausermgmt"
+        REGISTRY_NAME = "khazi123/user-management"
      }
 
     agent any
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 cleanWs()
                 withCredentials([string(credentialsId: 'GITHUB_TOKEN_PS', variable: '')]) {
-                    git branch: 'main', url: 'https://github.com/vishabsingh09/eca-usermgmt.git '
+                    git branch: 'main', url: 'https://github.com/hackathone2023/user-management.git'
                 }
             }
         }
