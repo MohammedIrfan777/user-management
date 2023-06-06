@@ -11,9 +11,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                withCredentials([string(credentialsId: 'GITHUB_TOKEN_PS', variable: '')]) {
-                    git branch: 'main', url: 'https://github.com/hackathone2023/user-management.git'
-                }
+                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_TOKEN_PS', gitToolName: 'Default')]) {
+                     git branch: 'main', url: 'https://github.com/hackathone2023/user-management.git'
+                }   
             }
         }
         stage('Build') {
