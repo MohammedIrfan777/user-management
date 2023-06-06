@@ -1,0 +1,16 @@
+{
+  "type": "TENANT",
+  "firstName": "Vishab",
+  "lastName": "Singh",
+  "phoneNo": 9590311726,
+  "emailId": "vishabsingh23@gmail.com",
+  "addressLine": "Marheen",
+  "city": "kathua",
+  "state": "JAMMU & KASHMIR",
+  "zipCode": "184148",
+  "password": null,
+  "id": 1,
+  "apartmentCost": 678899,
+  "leaseStartDate": "24/02/2022",
+  "leaseEndDate": "24/02/2026"
+}
