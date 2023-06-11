@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<BaseResponse> getAllUsers(String typeOfUser) {
 		var strategy = userStrategyFactory.findStrategy(TypeOfUser.getUserType(typeOfUser));
-		log.info("UserService getAllUsers:: TypeOfUser {}  Response {} ",typeOfUser,jsonUtils.toJson(strategy));
+		log.info("UserService getAllUsers:: TypeOfUser {}  Response {} ",typeOfUser,strategy);
 		return strategy;
 	}
 

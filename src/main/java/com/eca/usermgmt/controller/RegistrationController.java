@@ -20,10 +20,10 @@ import java.util.Set;
 public class RegistrationController {
     @Autowired
     private RegistrationService registrationService;
-
     @Autowired
     private Validator validator;
 
+    @CrossOrigin
     @PostMapping("/registration")
     public ResponseEntity<UserCommonResponse> registration(
             @RequestBody UserRegistrationRequest userRequest) {
@@ -35,5 +35,4 @@ public class RegistrationController {
         }
         return registrationService.registration(userRequest);
     }
-
 }

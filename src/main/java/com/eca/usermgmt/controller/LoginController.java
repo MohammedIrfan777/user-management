@@ -28,6 +28,7 @@ public class LoginController {
 	@Autowired
 	private GenerateJwtToken generateJwtToken;
 
+	@CrossOrigin
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, String>> token(@Valid @RequestBody UserLoginRequest loginRequest) {
 		log.info("LoginController::token {} ",loginRequest);

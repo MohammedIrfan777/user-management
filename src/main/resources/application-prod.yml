@@ -1,9 +1,9 @@
 spring:
   config:
-    import: ${CONFIG_IMPORT_URL:configserver:http://localhost:8070}
+    import: ${CONFIG_IMPORT_URL:configserver:http://192.168.196.128:6090}
   cloud:
     config:
-      uri: ${CONFIG_SERVER_URL:localhost:8070}
+      uri: ${CONFIG_SERVER_URL:192.168.196.128:6090}
   kafka:
     producer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_URL:localhost:9094}
@@ -28,13 +28,18 @@ logging:
     org.springframework.security: DEBUG
 
 management:
-  endpoint:
-    health:
-      show-details: always
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: ["beans", "metrics","health","heapdump","info","liquibase","prometheus","env","beans"]
+        exclude: "loggers,shutdown,startup"
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
 app:
   kafka:
     enabled: true

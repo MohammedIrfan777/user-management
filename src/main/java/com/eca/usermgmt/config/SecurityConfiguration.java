@@ -43,6 +43,7 @@ public class SecurityConfiguration {
 				.authorizeRequests(requests -> requests
 						.antMatchers("/v1/users/registration").permitAll()
 						.antMatchers("/v1/users/login").permitAll()
+						.antMatchers("/v1/actuator/**").permitAll()
 						.antMatchers("/v1/users/**").authenticated());
 
 		http.authenticationProvider(authenticationProvider());

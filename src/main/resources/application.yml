@@ -1,3 +1,4 @@
+
 spring:
   cloud:
     inetutils:
@@ -5,15 +6,16 @@ spring:
   application:
     name: ecausermgmt
   profiles:
-    active: local
+    active: dev
   main:
     allow-bean-definition-overriding: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
+  sleuth:
+    enabled: true
 server:
-  port: 6090
+  port: ${USER_MGM_PORT:6090}
 
 eureka:
   instance:
@@ -25,14 +27,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
-management:
-  endpoints:
-    web:
-      exposure:
-        include: ["beans", "metrics","health","heapdump","info","liquibase"]
-        exclude: "env,beans"
-
+      defaultZone: ${EUREKA_URI:http://192.168.196.128:8761/eureka}
 logging:
   level:
     root: INFO
@@ -49,13 +44,13 @@ app:
     maxTotal: ${POOL_MAX_TOTAL:25}
     minIdle: ${POOL_MIN_IDLE:10}
   redis:
-    host: ${REDIS_HOSTNAME:192.168.117.129}
+    host: ${REDIS_HOSTNAME:localhost}
     port: ${REDIS_PORT:6379}
     password: ${REDIS_PASSWORD:}
     connectTimeOutInSeconds: 120
   openapi:
     dev-url: http://localhost:${server.port}
-    prod-url: https://eca-api.com
+    prod-url: https://ecaprodapi.com
 
 feign:
   httpclient:
@@ -63,9 +58,9 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: ${FEIGN_CONNECT_TIMEOUT:5000}
+        readTimeout: ${FEIGN_READ_TIMEOUT:5000}
         loggerLevel: BASIC
 
 catalog-service:
-  baseUrl: ${CATALOG_SERVICE_URL:http://localhost:8080}
+  baseUrl: ${CATALOG_SERVICE_URL:http://192.168.196.128:6092}

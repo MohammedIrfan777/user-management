@@ -22,6 +22,7 @@ public class TenantController {
 	@Autowired
 	private TenantService tenantService;
 
+	@CrossOrigin
 	@GetMapping("/tenants")
 	@PreAuthorize("hasAnyAuthority('READ_PERMISSION','WRITE_PERMISSION')")
 	public ResponseEntity<BaseResponse> getAllTenants() {
@@ -29,6 +30,7 @@ public class TenantController {
 		return tenantService.getAllTenants();
 	}
 
+	@CrossOrigin
 	@GetMapping("/tenants/{id}")
 	@PreAuthorize("hasAnyAuthority('READ_PERMISSION','UPDATE_PERMISSION')")
 	public ResponseEntity<BaseResponse> getTenantById(@NotNull @PathVariable Long id) {
@@ -36,6 +38,7 @@ public class TenantController {
 		return tenantService.getTenantById(id);
 	}
 
+	@CrossOrigin
 	@PostMapping("/tenants")
 	@PreAuthorize("hasAnyAuthority('READ_PERMISSION','UPDATE_PERMISSION')")
 	public ResponseEntity<BaseResponse> createTenant( @Valid @RequestBody TenantsDTO request) {
@@ -43,6 +46,7 @@ public class TenantController {
 		return tenantService.createTenant(request);
 	}
 
+	@CrossOrigin
 	@PutMapping("/tenants/{id}")
 	@PreAuthorize("hasAnyAuthority('"+UserConstants.WRITE_PERMISSION+"','"+UserConstants.UPDATE_PERMISSION+"')")
 	public ResponseEntity<BaseResponse> updateTenant(@PathVariable Long id,
@@ -51,6 +55,7 @@ public class TenantController {
 		return tenantService.updateTenant(id,request );
 	}
 
+	@CrossOrigin
 	@DeleteMapping("/tenants/{id}")
 	@PreAuthorize("hasAnyAuthority('"+ UserConstants.DELETE_PERMISSION+"')")
 	public void deleteTenant(@PathVariable Long id) {

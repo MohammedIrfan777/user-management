@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REGISTRY_NAME = "khazi123/user-management"
+        REGISTRY_NAME = "singhvishab/ecausermgmt"
      }
 
     agent any
@@ -11,9 +11,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                withCredentials([gitUsernamePassword(credentialsId: 'GITHUB_TOKEN_PS', gitToolName: 'Default')]) {
-                     git branch: 'main', url: 'https://github.com/hackathone2023/user-management.git'
-                }   
+                withCredentials([string(credentialsId: 'GITHUB_TOKEN_PS', variable: '')]) {
+                    git branch: 'main', url: 'https://github.com/vishabsingh09/eca-usermgmt.git '
+                }
             }
         }
         stage('Build') {
@@ -43,7 +43,7 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                withDockerRegistry(credentialsId: 'DOCKER_HUB_USER_TOKEN', url: '') {
+                withDockerRegistry(credentialsId: 'DOCKER_HUB_USER_PS', url: '') {
                     sh 'docker push $REGISTRY_NAME:$BUILD_NUMBER'
                 }
             }

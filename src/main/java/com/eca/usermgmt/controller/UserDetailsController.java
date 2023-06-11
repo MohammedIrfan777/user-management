@@ -40,6 +40,7 @@ public class UserDetailsController {
 	@Autowired
 	private Validator validator;
 
+	@CrossOrigin
 	@GetMapping("/getAllUsers")
 	@PreAuthorize("hasAnyAuthority('"+UserConstants.WRITE_PERMISSION+"','"+UserConstants.AUTHORITY_OWNER+"')")
 	public ResponseEntity<BaseResponse> getUserDetails(@RequestParam(value = UserConstants.TYPE, defaultValue = UserConstants.ALL)
@@ -48,6 +49,7 @@ public class UserDetailsController {
 		return userService.getAllUsers(typeOfUser);
 	}
 
+	@CrossOrigin
 	@GetMapping("/phone/{phoneNumber}")
 	@PreAuthorize("hasPermission(#phoneNumber, '" +UserConstants.READ_PERMISSION+"')")
 	public ResponseEntity<BaseResponse> getUserByPhoneNumber(@PathVariable("phoneNumber") Long phoneNumber) {
@@ -70,6 +72,7 @@ public class UserDetailsController {
 	 * @param ownerDTO OwnerDTO
 	 * @return BaseResponse.
 	 */
+	@CrossOrigin
 	@PutMapping("/owner/{ownerId}")
 	@PreAuthorize("hasAnyAuthority('WRITE_PERMISSION')")
 	public ResponseEntity<BaseResponse> updateOwner(@PathVariable("ownerId") Long ownerId , @RequestBody OwnerDTO ownerDTO) {
@@ -83,6 +86,7 @@ public class UserDetailsController {
 	 * @param vendorDTO VendorDTO
 	 * @return BaseResponse.
 	 */
+	@CrossOrigin
 	@PutMapping("/vendor/{vendorId}")
 	@PreAuthorize("hasAnyAuthority('"+UserConstants.UPDATE_PERMISSION+"','"+UserConstants.WRITE_PERMISSION+"','"+UserConstants.VENDOR_PERMISSION+"')")
 	public ResponseEntity<BaseResponse> updateVendor(@PathVariable("vendorId") Long vendorId ,

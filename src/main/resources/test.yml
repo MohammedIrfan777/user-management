@@ -1,0 +1,161 @@
+version: '3.0'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    networks:
+      - kafka-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - 22181:2181
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    hostname: kafka
+    container_name: kafka
+    networks:
+      - kafka-network
+    depends_on:
+      - zookeeper
+    ports:
+      - 9094:9094
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://:9092,OUTSIDE://:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_TOOLS_LOG4J_LOGLEVEL: ERROR
+  ecadiscovery:
+    image: khazi123/ecadiscovery:latest
+    ports:
+      - 8761:8761
+    volumes:
+      - /logs/ecadiscovery:/logs
+    container_name: discovery
+    hostname: ecadiscovery
+    networks:
+      - kafka-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URI=http://ecadiscovery:8761/eureka
+      - EUREKA_HOST_NAME=ecadiscovery
+
+  ecaconfigserver:
+    image: khazi123/ecaconfigserver
+    ports:
+      - 6091:6091
+    volumes:
+      - /logs/ecaconfig:/logs
+    networks:
+      - kafka-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URI=http://ecadiscovery:8761/eureka
+    hostname: ecaconfigserver
+    depends_on:
+      - ecadiscovery
+    container_name: configserver
+  ecaapartmentcatalog:
+    image: khazi123/ecaapartmentcatalog
+    ports:
+      - 6092:6092
+    volumes:
+      - /logs/ecaapartmentcatalog:/logs
+    networks:
+      - kafka-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URI=http://ecadiscovery:8761/eureka
+      - APART_POSTGRES_URL=192.168.196.128
+      - APART_POSTGRES_DB=ECA_APARTMENT_DB
+      - APART_POSTGRES_USER_NAME=postgres
+      - APART_POSTGRES_PASSWORD=postgres
+    container_name: apartment
+    hostname: ecaapartmentcatalog
+    depends_on:
+      - ecadiscovery
+  ecausermgmt:
+    image: khazi123/ecausermgmt
+    ports:
+      - 6090:6090
+    volumes:
+      - /logs/ecausermgmt:/logs
+    networks:
+      - kafka-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URI=http://ecadiscovery:8761/eureka
+      - USER_MGM_POSTGRESQL_URL=192.168.196.128
+      - USER_MGM_POSTGRES_DB=ECA_USER_MGMT_DB
+      - USER_MGM_POSTGRES_USER=postgres
+      - USER_MGM_POSTGRES_PASSWORD=postgres
+      - KAFKA_BOOTSTRAP_SERVER_URL=192.168.196.128:9094
+      - CONFIG_IMPORT_URL=optional:configserver:http://ecaconfigserver:6091
+      - CONFIG_SERVER_URL=http://ecaconfigserver:6091
+      - CATALOG_SERVICE_URL=http://ecaapartmentcatalog:6092
+      - USER_MGM_TOPIC=user-mgmt-notification
+      - REDIS_PORT=6379
+      - REDIS_HOSTNAME=192.168.196.128
+    container_name: usermgmt
+    hostname: ecausermgmt
+    depends_on:
+      - ecadiscovery
+      - ecaconfigserver
+      - kafka
+  ecavisitor:
+    image: khazi123/ecavisitor
+    ports:
+      - 6094:6094
+    volumes:
+      - /logs/ecavisitor:/logs
+    networks:
+      - kafka-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_URI=http://ecadiscovery:8761/eureka
+      - VISITOR_MGM_POSTGRESQL_URL=192.168.196.128
+      - VISITOR_MGM_POSTGRES_DB=ECA_VISITOR_DB
+      - VISITOR_MGM_POSTGRES_USER=postgres
+      - VISITOR_MGM_POSTGRES_PASSWORD=postgres
+      - USER_SERVICE_ENDPOINT=http://ecausermgmt:6090/v1/users/phone/{phoneNumber}
+      - VISITOR_REQ_TOPIC=visitor-notification
+      - VISITOR_KAFKA_BOOTSTRAP_SERVER=192.168.196.128:9094
+      - REDIS_PORT=6379
+      - REDIS_HOSTNAME=192.168.196.128
+    container_name: visitor
+    hostname: ecavisitor
+    depends_on:
+      - ecadiscovery
+      - ecaconfigserver
+      - kafka
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    hostname: prometheus
+    networks:
+      - kafka-network
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - ecavisitor
+      - ecaapartmentcatalog
+      - ecausermgmt
+      - ecadiscovery
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+networks:
+  kafka-network:
+    driver: bridge
