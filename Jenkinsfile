@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REGISTRY_NAME = "singhvishab/ecausermgmt"
+        REGISTRY_NAME = "khazi123/ecausermgmt"
      }
 
     agent any
