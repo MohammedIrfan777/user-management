@@ -33,6 +33,23 @@ pipeline {
             }
         }
 
+        stage('SonarQube') {
+                  environment {
+                    scannerHome = tool 'SonarQube'
+                  }
+                  steps {
+                              script {
+                              sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ecausermgmt: \
+                                                                  -Dsonar.projectName=ecausermgmt \
+                                                                  -Dsonar.projectVersion=1.0 \
+                                                                  -Dsonar.sources=src/ \
+                                                                  -Dsonar.java.binaries=target/classes/com/ps/mslife/controller/ \
+                                                                  -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                                                                  -Dsonar.jacoco.reportsPath=target/jacoco.exec"
+                                                                  }
+                                    }
+             }
+
         stage('Building image') {
           steps{
             sh 'docker build -t $REGISTRY_NAME:$BUILD_NUMBER .'
