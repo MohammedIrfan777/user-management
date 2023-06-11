@@ -11,9 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                withCredentials([string(credentialsId: 'GITHUB_TOKEN_PS', variable: '')]) {
-                    git branch: 'main', url: 'https://github.com/vishabsingh09/eca-usermgmt.git '
-                }
+                    git branch: 'main', url: 'https://github.com/MohammedIrfan777/user-management.git'
             }
         }
         stage('Build') {
@@ -43,9 +41,7 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                withDockerRegistry(credentialsId: 'DOCKER_HUB_USER_PS', url: '') {
-                    sh 'docker push $REGISTRY_NAME:$BUILD_NUMBER'
-                }
+                 sh 'docker push $REGISTRY_NAME:$BUILD_NUMBER'
             }
         }
     }
