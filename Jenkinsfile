@@ -33,30 +33,30 @@ pipeline {
             }
         }
 
-//         stage('SonarQube') {
-//                   environment {
-//                     scannerHome = tool 'SonarQube'
-//                   }
-//                   steps {
-//                               script {
-//                               sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ecausermgmt: \
-//                                                                   -Dsonar.projectName=ecausermgmt \
-//                                                                   -Dsonar.projectVersion=1.0 \
-//                                                                   -Dsonar.sources=src/ \
-//                                                                   -Dsonar.java.binaries=target/classes/com/ps/mslife/controller/ \
-//                                                                   -Dsonar.junit.reportsPath=target/surefire-reports/ \
-//                                                                   -Dsonar.jacoco.reportsPath=target/jacoco.exec"
-//                                                                   }
-//                                     }
-//              }
-        stage('SonarQube analysis') {
-//    def scannerHome = tool 'SonarScanner 4.0';
-        steps{
-        withSonarQubeEnv('sonarqube 10.0') { 
-        // If you have configured more than one global server connection, you can specify its name
-//      sh "${scannerHome}/bin/sonar-scanner"
-        sh "mvn sonar:sonar"
-    }
+        stage('SonarQube') {
+                  environment {
+                    scannerHome = tool 'SonarQube'
+                  }
+                  steps {
+                              script {
+                              sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ecausermgmt: \
+                                                                  -Dsonar.projectName=ecausermgmt \
+                                                                  -Dsonar.projectVersion=1.0 \
+                                                                  -Dsonar.sources=src/ \
+                                                                  -Dsonar.java.binaries=target/classes/com/ps/mslife/controller/ \
+                                                                  -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                                                                  -Dsonar.jacoco.reportsPath=target/jacoco.exec"
+                                                                  }
+                                    }
+             }
+//         stage('SonarQube analysis') {
+// //    def scannerHome = tool 'SonarScanner 4.0';
+//         steps{
+//         withSonarQubeEnv('sonarqube 10.0') { 
+//         // If you have configured more than one global server connection, you can specify its name
+// //      sh "${scannerHome}/bin/sonar-scanner"
+//         sh "mvn sonar:sonar"
+//     }
 
         stage('Building image') {
           steps{
